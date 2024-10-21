@@ -1,7 +1,18 @@
-import React, { ChangeEvent, useState, FormEvent } from 'react';
-import styles from '../styles/taskModal.module.css';
+"use client";
 
-const TaskModal = ({ task, isEditing, onSave, onCancel, setTask }) => {
+import React, { ChangeEvent, useState, FormEvent, KeyboardEvent } from 'react';
+import styles from '../styles/taskModal.module.css';
+import { ITask } from '@/types';
+
+interface IProps {
+  task: ITask;
+  isEditing: boolean;
+  onSave: () => void;
+  onCancel: () => void;
+  setTask: (newTask: ITask) => void
+}
+
+const TaskModal = ({ task, isEditing, onSave, onCancel, setTask }:IProps) => {
   const maxDescriptionLength = 120; // Set max length for description
   const [remainingChars, setRemainingChars] = useState(maxDescriptionLength - task.description.length);
 
@@ -12,6 +23,26 @@ const TaskModal = ({ task, isEditing, onSave, onCancel, setTask }) => {
       setRemainingChars(maxDescriptionLength - inputValue.length);
     }
   };
+
+  const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace') {
+      const currentInputValue = e.currentTarget.value;
+      const tags = task.tags;
+  
+      if (currentInputValue.trim() === '') {
+        e.preventDefault();
+  
+        if (tags.length > 0) {
+          const updatedTags = tags.slice(0, -1);
+          setTask({ ...task, tags: updatedTags });
+        }
+      } else if (currentInputValue.endsWith(', ')) {
+        const trimmedInput = currentInputValue.slice(0, -2);
+        e.currentTarget.value = trimmedInput;
+      }
+    }
+  };
+  
 
   const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,6 +89,7 @@ const TaskModal = ({ task, isEditing, onSave, onCancel, setTask }) => {
           <input
             type="text"
             value={task.tags.join(', ') || ''}
+            onKeyUp={handleKeyUp} // Add keydown event listener
             onChange={(e) =>
               setTask({
                 ...task,

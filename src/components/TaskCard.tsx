@@ -24,7 +24,6 @@ const TaskCard = ({ task }: IProps) => {
                         <span className={styles.dueDate}>
                             Due: {task?.dueDate}
                         </span>
-                        {/*  <span className={`priority ${task.priority.toLowerCase()}`}>{task.priority}</span> */}
                         <span
                             className={`${styles.priority}  ${
                                 styles[task?.priority.toLowerCase()]
@@ -38,13 +37,12 @@ const TaskCard = ({ task }: IProps) => {
                                     {tag}
                                 </span>
                             ))}
-                            {/* <span className={styles.tag}>tag</span> */}
                         </div>
                     </div>
                 </div>
                 <div className={styles.taskActions}>
                     <button
-                        // id={`reminder-${task.id}`}
+                        id={`reminder_${task._id}`}
                         // onClick={() => toggleReminder(task.id)}
                         // className={`reminder-button ${
                         //     task.reminder ? "active" : ""
@@ -58,7 +56,7 @@ const TaskCard = ({ task }: IProps) => {
                         // onClick={() => setEditingTask(task)}
                         className="edit-button"
                     >
-                        <UpdateTask />
+                        <UpdateTask task={task} />
                     </div>
                     <button
                         // onClick={() => deleteTask(task.id)}
