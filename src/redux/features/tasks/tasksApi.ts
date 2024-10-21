@@ -15,20 +15,22 @@ const tasksApi = baseApi.injectEndpoints({
     }),
 
     getTasks: builder.query({
-      query: ({ carType, price }) => {
+      query: ({ search = '', status = 'All', priority = 'All', tag = 'All' }) => {
         const params = new URLSearchParams();
 
-        if (carType) {
-          params.append('carType', carType);
-        }
-        if (price > 0) {
-          params.append('price', price);
-        }
+        if (search) params.append('search', search);
+
+        if (status !== 'All') params.append('status', status);
+
+        if (priority !== 'All') params.append('priority', priority);
+
+        if (tag !== 'All') params.append('tag', tag);
+
         return {
-          url: '/cars',
+          url: '/tasks',
           method: 'GET',
           params,
-        }
+        };
       },
       providesTags: ['tasks'],
     }),

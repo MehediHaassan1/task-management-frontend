@@ -1,0 +1,20 @@
+.filters {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.searchInput, .filterSelect {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.searchInput {
+  flex-grow: 1;
+  margin-right: 1rem;
+}
+
+.filterSelect {
+  margin-left: 0.1rem;
+}
