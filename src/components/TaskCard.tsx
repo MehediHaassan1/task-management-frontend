@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+"use client";
+
 import { useEffect, useState } from "react";
 import { ITask } from "@/types";
 import { useAppDispatch } from "@/redux/hook";
@@ -12,6 +15,7 @@ import {
     useDeleteTaskMutation,
     useUpdateTaskMutation,
 } from "@/redux/features/tasks/tasksApi";
+import { calculateHoursLeft } from "@/utils/calculateHoursLeft";
 
 interface IProps {
     task: ITask;
@@ -22,6 +26,8 @@ const TaskCard = ({ task }: IProps) => {
     const [updateStatus] = useUpdateTaskMutation();
     const [undoTimeoutId, setUndoTimeoutId] = useState<NodeJS.Timeout | null>(null);
     const [showUndoNotification, setShowUndoNotification] = useState(false);
+    const [reminderOn, setReminderOn] = useState(false);
+    const [hoursLeft, setHoursLeft] = useState<number | null>(null);
     const dispatch = useAppDispatch();
 
     const handleDelete = () => {
@@ -53,105 +59,116 @@ const TaskCard = ({ task }: IProps) => {
         }
     }, [undoTimeoutId]);
 
-    if (showUndoNotification) {
-        return (
-            <div className={styles.undoNotification}>
-                Task deleted.{" "}
-                <button className={styles.undoNotificationButton} onClick={handleUndo}>
-                    Undo
-                </button>
-            </div>
-        );
-    }
-
     const handleStatusUpdate = (id: string, status: string) => {
-        if(status === 'Completed'){
-            updateStatus({id, data: {status: 'Completed'}});
-        }else{
-            updateStatus({id, data: {status: 'Pending'}});
-        }
+        updateStatus({ id, data: { status } });
     };
+
+    useEffect(() => {
+        if (reminderOn) {
+            setHoursLeft(calculateHoursLeft(task?.dueDate));
+            const intervalId = setInterval(() => {
+                setHoursLeft(calculateHoursLeft(task?.dueDate));
+            }, 60000);
+
+            return () => clearInterval(intervalId); 
+        }
+    }, [reminderOn, task?.dueDate]);
 
     return (
         <div>
-            <div
-                id={`task-${task?._id}`}
-                className={`${styles.taskItem} ${task?.status} ${
-                    styles[`taskItem_${task?.priority.toLowerCase()}`]
-                }`}
-            >
-                <div className={styles.taskContent}>
-                    <h3
-                        className={task?.status === "Completed" ? styles.strikethrough : ""}
-                    >
-                        {task?.title}
-                    </h3>
-                    <p
-                        className={task?.status === "Completed" ? styles.strikethrough : ""}
-                    >
-                        {task?.description}
-                    </p>
-                    <div className={styles.taskMeta}>
-                        <span className={styles.dueDate}>
-                            Due: {task?.dueDate}
-                        </span>
-                        <span
-                            className={`${styles.priority} ${
-                                styles[task?.priority.toLowerCase()]
-                            }`}
+            {showUndoNotification ? (
+                <div className={styles.undoNotification}>
+                    Task deleted.{" "}
+                    <button className={styles.undoNotificationButton} onClick={handleUndo}>
+                        Undo
+                    </button>
+                </div>
+            ) : (
+                <div
+                    id={`task-${task?._id}`}
+                    className={`${styles.taskItem} ${task?.status} ${
+                        reminderOn ? styles.dueSoon : ''
+                    } ${styles[`taskItem_${task?.priority.toLowerCase()}`]}`}
+                >
+                    <div className={styles.taskContent}>
+                        <h3
+                            className={task?.status === "Completed" ? styles.strikethrough : ""}
                         >
-                            {task?.priority}
-                        </span>
-                        <div className={styles.tags}>
-                            {task?.tags?.map((tag) => (
-                                <span key={tag} className={styles.tag}>
-                                    {tag}
-                                </span>
-                            ))}
+                            {task?.title}
+                        </h3>
+                        <p
+                            className={task?.status === "Completed" ? styles.strikethrough : ""}
+                        >
+                            {task?.description}
+                        </p>
+                        <div className={styles.taskMeta}>
+                            <span className={styles.dueDate}>
+                                {reminderOn && hoursLeft !== null ? (
+                                    `Due in ${Math.floor(hoursLeft)} hours`
+                                ) : (
+                                    `Due: ${task?.dueDate}`
+                                )}
+                            </span>
+                            <span
+                                className={`${styles.priority} ${
+                                    styles[task?.priority.toLowerCase()]
+                                }`}
+                            >
+                                {task?.priority}
+                            </span>
+                            <div className={styles.tags}>
+                                {task?.tags?.map((tag) => (
+                                    <span key={tag} className={styles.tag}>
+                                        {tag}
+                                    </span>
+                                ))}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className={styles.taskActions}>
-                    <button className={styles.reminderButton}>
-                        <Bell size={20} />
-                    </button>
-                    <div className="edit-button">
-                        <UpdateTask task={task} />
-                    </div>
-                    <button
-                        onClick={handleDelete}
-                        className="deleteButton"
-                        style={{ color: "red" }}
-                    >
-                        <Trash2 size={20} />
-                    </button>
-                    {task?.status === "Pending" ? (
-                        <button
-                            onClick={() =>
-                                handleStatusUpdate(
-                                    task?._id as string,
-                                    "Completed"
-                                )
-                            }
-                            style={{ color: "green" }}
+                    <div className={styles.taskActions}>
+                        <button 
+                            className={`${reminderOn ? styles.activeReminder : ''}`} 
+                            onClick={() => setReminderOn(!reminderOn)}
                         >
-                            <Check size={20} />
+                            <Bell size={20} />
                         </button>
-                    ) : (
+                        <div className="edit-button">
+                            <UpdateTask task={task} />
+                        </div>
                         <button
-                            onClick={() =>
-                                handleStatusUpdate(
-                                    task?._id as string,
-                                    "Pending"
-                                )
-                            }
+                            onClick={handleDelete}
                             style={{ color: "red" }}
                         >
-                            <X size={20} />
+                            <Trash2 size={20} />
                         </button>
-                    )}
+                        {task?.status === "Pending" ? (
+                            <button
+                                onClick={() =>
+                                    handleStatusUpdate(
+                                        task?._id as string,
+                                        "Completed"
+                                    )
+                                }
+                                style={{ color: "green" }}
+                            >
+                                <Check size={20} />
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() =>
+                                    handleStatusUpdate(
+                                        task?._id as string,
+                                        "Pending"
+                                    )
+                                }
+                                style={{ color: "red" }}
+                            >
+                                <X size={20} />
+                            </button>
+                        )}
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };

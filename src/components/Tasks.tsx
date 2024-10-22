@@ -24,15 +24,17 @@ const Tasks = () => {
         tag: filterTag,
     });
 
+    console.log(data);
+
     const uniqueTags = useMemo((): string[] => {
-        const allTags = data?.map((task: ITask) => task?.tags).flat() || [];
+        const allTags = data?.data?.map((task: ITask) => task?.tags).flat() || [];
         return Array.from(new Set(allTags)) as string[];
     }, [data]);
 
     // Group tasks by tag
     const groupedTasks = useMemo(() => {
-        if (!data) return {};
-        return data.reduce((acc: { [key: string]: ITask[] }, task: ITask) => {
+        if (!data?.data) return {};
+        return data?.data?.reduce((acc: { [key: string]: ITask[] }, task: ITask) => {
             const tags = task.tags || ["No Tag"];
             tags.forEach(tag => {
                 if (!acc[tag]) {
@@ -105,11 +107,11 @@ const Tasks = () => {
             {/* Collapsible section for 'All' tasks */}
             <div className={styles.collapsibleSection}>
                 <h3 onClick={toggleAllTasksSection} className={styles.collapsibleHeader}>
-                    All Tasks ({data?.length || 0}) {isAllTasksOpen ? '−' : '+'}
+                    All Tasks ({data?.data?.length || 0}) {isAllTasksOpen ? '−' : '+'}
                 </h3>
                 {isAllTasksOpen && (
                     <div className={styles.taskList}>
-                        {data?.map((task: ITask) => (
+                        {data?.data?.map((task: ITask) => (
                             <TaskCard key={task._id} task={task} />
                         ))}
                     </div>
