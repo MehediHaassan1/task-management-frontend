@@ -47,11 +47,10 @@ const tasksApi = baseApi.injectEndpoints({
     }),
 
     deleteTask: builder.mutation({
-      query: (payload) => {
+      query: (id) => {
         return {
-          url: `/tasks/${payload.id}`,
-          method: "PUT",
-          body: { isDeleted: payload.status },
+          url: `/tasks/${id}`,
+          method: "DELETE",
         }
       },
       invalidatesTags: ['tasks'],

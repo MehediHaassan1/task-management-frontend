@@ -26,6 +26,12 @@
     border-left: 5px solid #f44336;
 }
 
+.strikethrough {
+    text-decoration: line-through;
+    color: gray;
+  }
+  
+
 .taskContent {
     flex-grow: 1;
 }
@@ -109,8 +115,53 @@
     color: #4caf50;
 }
 
+.undoNotification {
+    position: fixed; 
+    right: 2rem;
+    bottom: 2rem;
+    background-color: #323232; 
+    color: #ffffff; 
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    z-index: 1000;
+    opacity: 0;
+    animation: fadeInUp 0.3s forwards;
+}
+
+.undoNotificationButton {
+    margin-left: 15px;
+    background: none;
+    border: 1px solid #4caf50;
+    color: #4caf50;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.undoNotificationButton:hover {
+    color: #81c784;
+}
+
+/* Toast animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @media (max-width: 600px) {
-    .taskMeta{
+    .taskMeta {
         margin: 1rem 0;
     }
     .taskItem {

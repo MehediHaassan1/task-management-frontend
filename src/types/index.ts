@@ -4,7 +4,7 @@ export interface ITask {
   description: string;
   dueDate: string;
   priority: string;
-  status?: "Pending" | "Complete";
+  status?: "Pending" | "Completed";
   tags: string[] | [];
   createdAt?: string;
   updatedAt?: string;
