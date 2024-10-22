@@ -10,10 +10,11 @@ import styles from "../styles/tasks.module.css";
 const Tasks = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState<string | "All">("All");
-    const [filterPriority, setFilterPriority] = useState<
-        "High" | "Medium" | "Low" | "All"
-    >("All");
+    const [filterPriority, setFilterPriority] = useState<"High" | "Medium" | "Low" | "All">("All");
     const [filterTag, setFilterTag] = useState<string | "All">("All");
+    
+    // State for managing the open/close of the "All Tasks" section
+    const [isAllTasksOpen, setIsAllTasksOpen] = useState(true); // Initially open
 
     // Pass the filter values to the hook
     const { data, isLoading } = useGetTasksQuery({
@@ -27,6 +28,31 @@ const Tasks = () => {
         const allTags = data?.map((task: ITask) => task?.tags).flat() || [];
         return Array.from(new Set(allTags)) as string[];
     }, [data]);
+
+    // Group tasks by tag
+    const groupedTasks = useMemo(() => {
+        if (!data) return {};
+        return data.reduce((acc: { [key: string]: ITask[] }, task: ITask) => {
+            const tags = task.tags || ["No Tag"];
+            tags.forEach(tag => {
+                if (!acc[tag]) {
+                    acc[tag] = [];
+                }
+                acc[tag].push(task);
+            });
+            return acc;
+        }, {});
+    }, [data]);
+
+    const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({});
+
+    const toggleSection = (tag: string) => {
+        setOpenSections(prev => ({ ...prev, [tag]: !prev[tag] }));
+    };
+
+    const toggleAllTasksSection = () => {
+        setIsAllTasksOpen(prev => !prev); // Toggle the "All Tasks" section
+    };
 
     if (isLoading) return <div>Loading ...</div>;
 
@@ -43,9 +69,7 @@ const Tasks = () => {
 
                 <select
                     value={filterStatus}
-                    onChange={(e) =>
-                        setFilterStatus(e.target.value as string | "All")
-                    }
+                    onChange={(e) => setFilterStatus(e.target.value as string | "All")}
                     className={styles.filterSelect}
                 >
                     <option value="All">Status</option>
@@ -55,11 +79,7 @@ const Tasks = () => {
 
                 <select
                     value={filterPriority}
-                    onChange={(e) =>
-                        setFilterPriority(
-                            e.target.value as "High" | "Medium" | "Low" | "All"
-                        )
-                    }
+                    onChange={(e) => setFilterPriority(e.target.value as "High" | "Medium" | "Low" | "All")}
                     className={styles.filterSelect}
                 >
                     <option value="All">Priorities</option>
@@ -82,11 +102,35 @@ const Tasks = () => {
                 </select>
             </div>
 
-            <div>
-                {data?.map((task: ITask, index: number) => (
-                    <TaskCard key={index} task={task} />
-                ))}
+            {/* Collapsible section for 'All' tasks */}
+            <div className={styles.collapsibleSection}>
+                <h3 onClick={toggleAllTasksSection} className={styles.collapsibleHeader}>
+                    All Tasks ({data?.length || 0}) {isAllTasksOpen ? '−' : '+'}
+                </h3>
+                {isAllTasksOpen && (
+                    <div className={styles.taskList}>
+                        {data?.map((task: ITask) => (
+                            <TaskCard key={task._id} task={task} />
+                        ))}
+                    </div>
+                )}
             </div>
+
+            {/* Collapsible sections for each tag */}
+            {Object.keys(groupedTasks).map(tag => (
+                <div key={tag} className={styles.collapsibleSection}>
+                    <h3 onClick={() => toggleSection(tag)} className={styles.collapsibleHeader}>
+                        {tag} ({groupedTasks[tag].length}) {openSections[tag] ? '−' : '+'}
+                    </h3>
+                    {openSections[tag] && (
+                        <div className={styles.taskList}>
+                            {groupedTasks[tag].map((task: ITask) => (
+                                <TaskCard key={task._id} task={task} />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            ))}
         </div>
     );
 };

@@ -1,3 +1,20 @@
+.collapsibleSection {
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.collapsibleHeader {
+  padding: 0.5rem;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.taskList {
+  padding: 0.5rem 1rem;
+}
+
 .filters {
   display: flex;
   justify-content: space-between;
