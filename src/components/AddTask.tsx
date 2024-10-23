@@ -8,14 +8,13 @@ import { ITask } from "@/types";
 import { useCreateTaskMutation } from "@/redux/features/tasks/tasksApi";
 
 const AddTask = () => {
-    // Initialize newTask using ITask interface
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [newTask, setNewTask] = useState<ITask>({
         title: "",
         description: "",
         dueDate: "",
-        priority: "Low", // Matches the ITask type
-        tags: [], // Initialize as an array of strings
+        priority: "Low",
+        tags: [],
     });
     
     const [handleAddTask, { isError, isSuccess }] = useCreateTaskMutation();
@@ -37,8 +36,8 @@ const AddTask = () => {
                 title: "",
                 description: "",
                 dueDate: "",
-                priority: "Low", // Reset to default
-                tags: [], // Reset tags array
+                priority: "Low",
+                tags: [],
             });
         }
     }, [isError, isSuccess]);

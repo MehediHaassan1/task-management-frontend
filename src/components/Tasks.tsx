@@ -14,7 +14,7 @@ const Tasks = () => {
     const [filterTag, setFilterTag] = useState<string | "All">("All");
     
     // State for managing the open/close of the "All Tasks" section
-    const [isAllTasksOpen, setIsAllTasksOpen] = useState(true); // Initially open
+    const [isAllTasksOpen, setIsAllTasksOpen] = useState(true);
 
     // Pass the filter values to the hook
     const { data, isLoading } = useGetTasksQuery({
@@ -23,8 +23,6 @@ const Tasks = () => {
         priority: filterPriority,
         tag: filterTag,
     });
-
-    console.log(data);
 
     const uniqueTags = useMemo((): string[] => {
         const allTags = data?.data?.map((task: ITask) => task?.tags).flat() || [];
@@ -35,7 +33,7 @@ const Tasks = () => {
     const groupedTasks = useMemo(() => {
         if (!data?.data) return {};
         return data?.data?.reduce((acc: { [key: string]: ITask[] }, task: ITask) => {
-            const tags = task.tags || ["No Tag"];
+            const tags = task?.tags || ["No Tag"];
             tags.forEach(tag => {
                 if (!acc[tag]) {
                     acc[tag] = [];
@@ -53,7 +51,7 @@ const Tasks = () => {
     };
 
     const toggleAllTasksSection = () => {
-        setIsAllTasksOpen(prev => !prev); // Toggle the "All Tasks" section
+        setIsAllTasksOpen(prev => !prev);
     };
 
     if (isLoading) return <div>Loading ...</div>;
@@ -112,21 +110,21 @@ const Tasks = () => {
                 {isAllTasksOpen && (
                     <div className={styles.taskList}>
                         {data?.data?.map((task: ITask) => (
-                            <TaskCard key={task._id} task={task} />
+                            <TaskCard key={task?._id} task={task} />
                         ))}
                     </div>
                 )}
             </div>
 
             {/* Collapsible sections for each tag */}
-            {Object.keys(groupedTasks).map(tag => (
+            {Object?.keys(groupedTasks)?.map(tag => (
                 <div key={tag} className={styles.collapsibleSection}>
                     <h3 onClick={() => toggleSection(tag)} className={styles.collapsibleHeader}>
-                        {tag} ({groupedTasks[tag].length}) {openSections[tag] ? '−' : '+'}
+                        {tag} ({groupedTasks[tag]?.length}) {openSections[tag] ? '−' : '+'}
                     </h3>
                     {openSections[tag] && (
                         <div className={styles.taskList}>
-                            {groupedTasks[tag].map((task: ITask) => (
+                            {groupedTasks[tag]?.map((task: ITask) => (
                                 <TaskCard key={task._id} task={task} />
                             ))}
                         </div>

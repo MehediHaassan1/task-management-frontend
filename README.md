@@ -1,36 +1,135 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Task Management Application (Frontend)
+This is the frontend of the Task Management Application built with Next.js. It provides a dynamic interface for users to create, edit, delete, filter, and search tasks. It also integrates with a backend API to store and manage tasks.
 
-## Getting Started
+## Table of Contents
 
-First, run the development server:
+-   [Features](#Features)
+-   [Technologies](#Technologies)
+-   [Setup and Installation](#Setup)
+-   [State Management with Redux Toolkit](#StateManagementwithReduxToolkit)
+-   [Folder Structure](#Structure)
+-   [Known Issues](#Issues)
+-   [Future Improvements](#Improvements)  
 
-```bash
+## Features
+- Task creation, editing, and deletion
+- Task filtering by status, priority, and tags
+- Search functionality for tasks by name or description
+- Undo option for task deletion
+- Task reminders for due dates within 24 hours
+- Tasks are styled dynamically based on priority and completion status
+- Fully responsive UI with basic accessibility features
+
+## Technologies
+-   **Next.js :** React framework for server-side rendering and static site generation
+-   **Redux Toolkit :** State management for efficient handling of tasks
+-   **CSS :** Raw CSS used for styling without any external CSS frameworks
+
+
+## Setup and Installation
+Instructions on how to install the project.
+
+```sh
+# Clone the repository
+git clone https://github.com/MehediHaassan1/task-management-frontend
+
+# Navigate to the project directory
+cd project-name
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env
+# Update .env file with your configuration
+
+# Start the project
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Frontend README
+Task Management Application (Frontend)
+This is the frontend of the Task Management Application built with Next.js. It provides a dynamic interface for users to create, edit, delete, filter, and search tasks. It also integrates with a backend API to store and manage tasks.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Table of Contents
+Features
+Technologies
+Setup
+Running the Application
+State Management with Redux Toolkit
+Folder Structure
+Known Issues
+Future Improvements
+Features
+Task creation, editing, and deletion
+Task filtering by status, priority, and tags
+Search functionality for tasks by name or description
+Undo option for task deletion
+Task reminders for due dates within 24 hours
+Tasks are styled dynamically based on priority and completion status
+Fully responsive UI with basic accessibility features
+Technologies
+Next.js: React framework for server-side rendering and static site generation
+Redux Toolkit: State management for efficient handling of tasks
+CSS: Raw CSS used for styling without any external CSS frameworks
+Axios: For API requests to interact with the backend
+Setup
+Clone the repository:
 
-## Learn More
+bash
+Copy code
+git clone https://github.com/yourusername/task-management-frontend.git
+Navigate to the project directory:
 
-To learn more about Next.js, take a look at the following resources:
+bash
+Copy code
+cd task-management-frontend
+Install dependencies:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+bash
+Copy code
+npm install
+Create a .env.local file in the root of the project and add the following variable:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+env
+Copy code
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+(Change the API_URL if your backend is hosted elsewhere.)
 
-## Deploy on Vercel
+Running the Application
+Start the Next.js development server:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+bash
+Copy code
+npm run dev
+Open http://localhost:3000 to view it in the browser.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## State Management
+- Redux Toolkit is used for managing the task state, including creating, updating, deleting, and filtering tasks.
+- createSlice is used to define the actions and reducers.
+- Redux Thunk handles asynchronous operations such as API calls.
+
+
+
+## Folder Structure
+src/
+
+├── app
+├── components
+├── lib
+|── redux          
+│── styles
+|-- types
+|-- utils
+
+## Known Issues
+- Task deletion undo is time-limited and may not function correctly on slow connections.
+- Task filtering and search may take time if the task list is large due to lack of pagination.
+- No user authentication yet, so tasks are accessible to everyone.
+
+## Future Improvements
+- Implement user authentication for secure task management.
+- Add pagination for large task lists.
+- Improve accessibility with additional ARIA roles and semantic HTML.
+- Enhance reminder functionality to integrate with notification services.

@@ -31,7 +31,7 @@ const TaskCard = ({ task }: IProps) => {
     const dispatch = useAppDispatch();
 
     const handleDelete = () => {
-        dispatch(temporarilyDeleteTask({ taskId: task._id }));
+        dispatch(temporarilyDeleteTask({ taskId: task?._id }));
 
         const timeoutId = setTimeout(() => {
             handleDeleteTask(task?._id);
@@ -45,7 +45,7 @@ const TaskCard = ({ task }: IProps) => {
     const handleUndo = () => {
         if (undoTimeoutId) {
             clearTimeout(undoTimeoutId);
-            dispatch(restoreTask({ taskId: task._id }));
+            dispatch(restoreTask({ taskId: task?._id }));
             setShowUndoNotification(false);
         }
     };

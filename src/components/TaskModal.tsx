@@ -13,8 +13,8 @@ interface IProps {
 }
 
 const TaskModal = ({ task, isEditing, onSave, onCancel, setTask }:IProps) => {
-  const maxDescriptionLength = 120; // Set max length for description
-  const [remainingChars, setRemainingChars] = useState(maxDescriptionLength - task.description.length);
+  const maxDescriptionLength = 120;
+  const [remainingChars, setRemainingChars] = useState(maxDescriptionLength - task?.description.length);
 
   const handleDescriptionChange = (e:ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.target.value;
@@ -27,7 +27,7 @@ const TaskModal = ({ task, isEditing, onSave, onCancel, setTask }:IProps) => {
   const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Backspace') {
       const currentInputValue = e.currentTarget.value;
-      const tags = task.tags;
+      const tags = task?.tags;
   
       if (currentInputValue.trim() === '') {
         e.preventDefault();
@@ -56,14 +56,14 @@ const TaskModal = ({ task, isEditing, onSave, onCancel, setTask }:IProps) => {
         <form onSubmit={handleSubmit}>
           <input
             type="text"
-            value={task.title || ''}
+            value={task?.title || ''}
             onChange={(e) => setTask({ ...task, title: e.target.value })}
             placeholder="Task title"
             required
           />
           <div className={styles.descriptionWrapper}>
             <textarea
-              value={task.description || ''}
+              value={task?.description || ''}
               onChange={handleDescriptionChange}
               placeholder="Task description"
               maxLength={maxDescriptionLength}
@@ -73,12 +73,12 @@ const TaskModal = ({ task, isEditing, onSave, onCancel, setTask }:IProps) => {
           </div>
           <input
             type="date"
-            value={task.dueDate|| ''}
+            value={task?.dueDate|| ''}
             onChange={(e) => setTask({ ...task, dueDate: e.target.value })}
             required
           />
           <select
-            value={task.priority || ''}
+            value={task?.priority || ''}
             onChange={(e) => setTask({ ...task, priority: e.target.value })}
             required
           >
@@ -88,7 +88,7 @@ const TaskModal = ({ task, isEditing, onSave, onCancel, setTask }:IProps) => {
           </select>
           <input
             type="text"
-            value={task.tags.join(', ') || ''}
+            value={task?.tags.join(', ') || ''}
             onKeyUp={handleKeyUp} // Add keydown event listener
             onChange={(e) =>
               setTask({
